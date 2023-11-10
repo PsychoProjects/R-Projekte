@@ -6,11 +6,6 @@ attach(Beispiel)
 tapply(X=Discrepancy, INDEX=Rater, FUN = summary)
 tapply(X=Surprise, INDEX=Rater, FUN = summary)
 
-#disc_aov <- aov(Rater ~ Discrepancy, data = Beispiel)
-#surp_aov <- aov(Rater ~ Surprise)
-#summary(disc_aov)
-#summary(surp_aov)
-
 kruskal.test(Rater ~ Surprise)
 kruskal.test(Rater ~ Discrepancy)
 
