@@ -2,19 +2,19 @@ install.packages("psych")
 library(psych)
 library(readxl)
 
-remove(Beispiel)
-Beispiel <- read_excel("Beispiel.xlsx")
+remove(Data)
+Data <- read_excel("Beispiel.xlsx")
 
-attach(Beispiel)
+attach(Data)
 
 describeBy(Discrepancy, `False Memory`)
 describeBy(Surprise, `False Memory`)
 
-boxplot(Discrepancy ~ `False Memory`, Beispiel)
-boxplot(Surprise ~ `False Memory`, Beispiel)
+boxplot(Discrepancy ~ `False Memory`, Data)
+boxplot(Surprise ~ `False Memory`, Data)
 
-wilcox.test(Discrepancy ~ `False Memory`, Beispiel, exact=FALSE, conf.int=TRUE)
-wilcox.test(Surprise ~ `False Memory`, Beispiel, exact=FALSE, conf.int=TRUE)
+wilcox.test(Discrepancy ~ `False Memory`, Data, exact=FALSE, conf.int=TRUE)
+wilcox.test(Surprise ~ `False Memory`, Data, exact=FALSE, conf.int=TRUE)
 
 par(mfrow=c(1,2))
 intervals <- seq(-0.5, 3.5)
