@@ -7,7 +7,7 @@ library(effsize)
 library(apa)
 
 # Load the data
-data <- read_excel("Beispiel.xlsx")
+data <- read_excel("Beispiel3.xlsx")
 
 # Inspect the data
 head(data)
@@ -24,8 +24,10 @@ t_test_results <- t.test(Surprise ~ `False Memory`, data = data)
 print("T-Test Results")
 print(t_test_results)
 
-cohens_d(Surprise ~ `False Memory`, data = data); # apa
-cohen.d(Surprise ~ `False Memory`, data = data); # effsize
+cd <- cohens_d(Surprise ~ `False Memory`, data = data); # apa
+print(cd)
+cd <- cohen.d(Surprise ~ `False Memory`, data = data); # effsize
+print(cd)
 
 # Non-Parametric Test - Kruskal-Wallis Test
 kruskal_test_results <- kruskal.test(Surprise ~ `False Memory`, data = analysis_data)
