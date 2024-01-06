@@ -26,3 +26,4 @@ hist(i1_dd[`erlebnisbasiert` == 0], breaks=intervals)
 hist(i1_dd[`erlebnisbasiert` == 1], breaks=intervals)
 
 par(mfrow=c(1,1))
+

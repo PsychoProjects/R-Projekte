@@ -1,0 +1,78 @@
+---
+title: "Ergebnisse"
+author: "Najat Brüne"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Pakete laden
+library(readxl)
+library(psych)
+library(dplyr)
+library(datasets)
+library(tidyverse)
+library(effsize)
+library(knitr)
+
+options(dplyr.summarise.inform = FALSE)
+
+# Daten einlesen
+daten <- read_excel("Aggregierte_Daten_Studierende MM7_JKH.xlsx")
+```
+
+## Analyse der Diskrepanzerkennung
+### Deskriptive Statistik
+
+```{r echo=FALSE}
+#describe(daten$i1_dd_w_MW)
+summary(daten$i1_dd_w_MW)
+
+```
+
+### t-Test
+```{r echo=FALSE}
+ergebnis <- t.test(daten$i1_dd_f_MW, daten$i1_dd_w_MW)
+print(ergebnis)
+
+```
+
+### Effektstärke mittels Cohens d berechnen
+```{r echo=FALSE}
+cd <- cohen.d(daten$i1_dd_f_MW, daten$i1_dd_w_MW)
+print(cd)
+
+```
+
+### Grafische Analyse
+```{r echo=FALSE}  
+boxplot(daten$i1_dd_w_MW, daten$i1_dd_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = "Diskrepanzerkennung")
+```
+
+## Analyse der initialen Überraschung
+### Deskriptive Statistik
+
+```{r echo=FALSE}
+#describe(daten$i1_ue_w_MW)
+summary(daten$i1_ue_w_MW)
+```
+
+### t-Test
+```{r echo=FALSE}
+ergebnis <- t.test(daten$i1_ue_f_MW, daten$i1_ue_w_MW)
+print(ergebnis)
+
+```
+
+### Effektstärke mittels Cohens d berechnen
+```{r echo=FALSE}
+cd <- cohen.d(daten$i1_ue_f_MW, daten$i1_ue_w_MW)
+print(cd)
+
+```
+
+### Grafische Analyse
+```{r echo=FALSE}
+boxplot(daten$i1_ue_w_MW, daten$i1_ue_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = "Initiale Überraschung")
+```
