@@ -1,4 +1,4 @@
-install.packages("psych")
+#install.packages("psych")
 library(psych)
 library(readxl)
 
