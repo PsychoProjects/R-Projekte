@@ -1,0 +1,128 @@
+---
+title: "Ergebnisse"
+author: "Najat Brüne"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Pakete laden
+library(readxl)
+library(psych)
+library(dplyr)
+library(datasets)
+library(tidyverse)
+library(effsize)
+library(knitr)
+library(car)
+library(lemon)
+library(kableExtra)
+
+knit_print.data.frame <- lemon_print
+
+options(dplyr.summarise.inform = FALSE)
+
+# Daten einlesen
+daten <- read_excel("Aggregierte_Daten_Studierende MM7_JKH.xlsx")
+```
+
+## Analyse der Diskrepanzerkennung
+### Deskriptive Statistik
+
+```{r echo=FALSE, render=lemon_print}
+#describe(daten$i1_dd_w_MW)
+print("daten$i1_dd_w_MW")
+summary(daten$i1_dd_w_MW)
+print("daten$i1_dd_f_MW")
+summary(daten$i1_dd_f_MW)
+
+```
+
+### t-Test 
+```{r echo=FALSE}
+ergebnis <- t.test(daten$i1_dd_f_MW, daten$i1_dd_w_MW, paired = TRUE)
+print(ergebnis)
+
+```
+
+### Effektstärke mittels Cohens d berechnen
+```{r echo=FALSE}
+cd <- cohen.d(daten$i1_dd_f_MW, daten$i1_dd_w_MW)
+print(cd)
+
+```
+
+### Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
+```{r echo=FALSE}
+result <- wilcox.test(daten$i1_dd_f_MW, daten$i1_dd_w_MW, paired = TRUE)
+print(result)
+```
+
+### Grafische Analyse
+```{r echo=FALSE}  
+boxplot(daten$i1_dd_w_MW, daten$i1_dd_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = "Diskrepanzerkennung")
+```
+
+## Analyse der initialen Überraschung
+### Deskriptive Statistik
+
+```{r echo=FALSE}
+#describe(daten$i1_ue_w_MW)
+print("daten$i1_ue_w_MW")
+summary(daten$i1_ue_w_MW)
+print("daten$i1_ue_f_MW")
+summary(daten$i1_ue_f_MW)
+```
+
+### t-Test 
+```{r echo=FALSE}
+ergebnis <- t.test(daten$i1_ue_f_MW, daten$i1_ue_w_MW, paired = TRUE)
+print(ergebnis)
+
+```
+
+### Effektstärke mittels Cohen's d berechnen
+```{r echo=FALSE}
+cd <- cohen.d(daten$i1_ue_f_MW, daten$i1_ue_w_MW)
+print(cd)
+
+```
+
+### Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
+```{r echo=FALSE}
+result <- wilcox.test(daten$i1_ue_f_MW, daten$i1_ue_w_MW, paired = TRUE)
+print(result)
+```
+
+### Grafische Analyse
+```{r echo=FALSE}
+boxplot(daten$i1_ue_w_MW, daten$i1_ue_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = "Initiale Überraschung")
+```
+
+## Manova der kombinierten Daten
+```{r echo=FALSE}
+# Vorbereiten der Daten für MANOVA
+# Erstellen eines neuen DataFrames, das 'w' und 'f' Werte als separate Fälle behandelt
+manova_data <- rbind(
+  data.frame(dd = daten$i1_dd_w_MW, ue = daten$i1_ue_w_MW, Truth = 'w'),
+  data.frame(dd = daten$i1_dd_f_MW, ue = daten$i1_ue_f_MW, Truth = 'f')
+)
+
+# Durchführen der MANOVA
+manova_results <- manova(cbind(dd, ue) ~ Truth, data = manova_data)
+
+# Anzeigen der Ergebnisse
+print(manova_results)
+summary(manova_results, test = "Wilks")
+
+print("summary.aov(manova_results)")
+summary.aov(manova_results)
+```
+
+## Anhang
+### Daten
+```{r echo=FALSE}
+knitr::kable(head(daten, n=1000), "pipe")
+#print(daten, n = 1000)
+```
