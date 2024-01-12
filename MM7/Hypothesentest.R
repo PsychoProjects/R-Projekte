@@ -1,29 +1,29 @@
-#install.packages("psych")
-library(psych)
+# Laden der benötigten Bibliotheken
 library(readxl)
+library(ggplot2)
 
-remove(Data)
-Data <- read_excel("Aufbereitete_Aggregierte_Daten_MM7_JKH.xlsx")
+# Einlesen der Daten
+data <- read_excel("Mittelwerte_MM7_korrigiert.xlsx")
 
-attach(Data)
+# Berechnung der Differenzen
+differences <- data$i1_dd_w_MW - data$i1_dd_f_MW
 
-describeBy(i1_dd, `erlebnisbasiert`)
-describeBy(i1_dd, `erlebnisbasiert`)
+# Shapiro-Wilk-Test zur Überprüfung der Normalverteilung
+shapiro_test <- shapiro.test(differences)
+print(shapiro_test)
 
-boxplot(i1_dd ~ `erlebnisbasiert`, Data)
-boxplot(i1_dd ~ `erlebnisbasiert`, Data)
+# Wilcoxon-Vorzeichen-Rang-Test
+wilcoxon_test <- wilcox.test(data$i1_dd_w_MW, data$i1_dd_f_MW, paired = TRUE)
+print(wilcoxon_test)
 
-wilcox.test(i1_dd ~ `erlebnisbasiert`, Data, exact=FALSE, conf.int=TRUE)
-wilcox.test(i1_dd ~ `erlebnisbasiert`, Data, exact=FALSE, conf.int=TRUE)
+# Erstellung eines Histogramms und eines Boxplots für die Differenzen
+par(mfrow = c(1, 2))
 
-par(mfrow=c(1,2))
-intervals <- seq(-0.5, 3.5)
-hist(i1_dd[`erlebnisbasiert` == 0], breaks=intervals)
-hist(i1_dd[`erlebnisbasiert` == 1], breaks=intervals)
+# Histogramm
+hist(differences, main = "Histogramm der Differenzen", xlab = "Differenzen", col = "blue", border = "black")
 
-intervals <- seq(-0.5, 1.5)
-hist(i1_dd[`erlebnisbasiert` == 0], breaks=intervals)
-hist(i1_dd[`erlebnisbasiert` == 1], breaks=intervals)
+# Boxplot
+boxplot(differences, main = "Boxplot der Differenzen", ylab = "Differenzen", col = "lightblue")
 
 par(mfrow=c(1,1))
 
