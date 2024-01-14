@@ -18,111 +18,204 @@ library(knitr)
 library(car)
 library(lemon)
 library(kableExtra)
+library(BSDA)
+library(ggplot2)
 
 knit_print.data.frame <- lemon_print
 
 options(dplyr.summarise.inform = FALSE)
 
 # Daten einlesen
-daten <- read_excel("Aggregierte_Daten_Studierende MM7_JKH.xlsx")
+daten <- read_excel("Mittelwerte_MM7_korrigiert.xlsx")
 ```
 
-## Analyse der Diskrepanzerkennung
-### Deskriptive Statistik
 
 ```{r echo=FALSE, render=lemon_print}
-#describe(daten$i1_dd_w_MW)
-print("daten$i1_dd_w_MW")
-summary(daten$i1_dd_w_MW)
-print("daten$i1_dd_f_MW")
-summary(daten$i1_dd_f_MW)
+fn_descriptive_analysis <- function(i1_w_MW, i1_f_MW){
+  print("i1_w_MW")
+  print(summary(i1_w_MW, digits = 3))
+  cat("\n")
+  print(describe(i1_w_MW))
+  cat("\n\n")
 
+  print("i1_f_MW")
+  print(summary(i1_f_MW, digits = 3))
+  cat("\n")
+  print(describe(i1_f_MW))
+}
 ```
-
-### t-Test 
-```{r echo=FALSE}
-ergebnis <- t.test(daten$i1_dd_f_MW, daten$i1_dd_w_MW, paired = TRUE)
-print(ergebnis)
-
-```
-
-### Effektstärke mittels Cohens d berechnen
-```{r echo=FALSE}
-cd <- cohen.d(daten$i1_dd_f_MW, daten$i1_dd_w_MW)
-print(cd)
-
-```
-
-### Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
-```{r echo=FALSE}
-result <- wilcox.test(daten$i1_dd_f_MW, daten$i1_dd_w_MW, paired = TRUE)
-print(result)
-```
-
-### Grafische Analyse
-```{r echo=FALSE}  
-boxplot(daten$i1_dd_w_MW, daten$i1_dd_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = "Diskrepanzerkennung")
-```
-
-## Analyse der initialen Überraschung
-### Deskriptive Statistik
 
 ```{r echo=FALSE}
-#describe(daten$i1_ue_w_MW)
-print("daten$i1_ue_w_MW")
-summary(daten$i1_ue_w_MW)
-print("daten$i1_ue_f_MW")
-summary(daten$i1_ue_f_MW)
+fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, title = ""){
+  boxplot(i1_w_MW, i1_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = title)
+
+  par(mfrow = c(1, 2), pty = "s")
+  hist(i1_w_MW, breaks = 20, main = "erlebnisbasiert", xlab = "Rating", col = "blue", border = "black")
+  hist(i1_f_MW, breaks = 20, main = "nicht erlebnisbasiert", xlab = "Rating", col = "blue", border = "black")
+  par(mfrow = c(1, 1))
+}
 ```
 
-### t-Test 
+
 ```{r echo=FALSE}
-ergebnis <- t.test(daten$i1_ue_f_MW, daten$i1_ue_w_MW, paired = TRUE)
-print(ergebnis)
-
+fn_tTest <- function (i1_w_MW, i1_f_MW) {
+  cat("Vorausstzungen für den t-Test
+  
+  1. Normalverteilung der Differenzen: Die Differenzen zwischen den gepaarten Beobachtungen sollten annähernd normalverteilt sein. Dies kann durch einen Test auf Normalverteilung (z. B. Shapiro-Wilk-Test) oder durch grafische Methoden (z. B. Histogramm oder Q-Q-Plot) überprüft werden.
+  2. Skalenniveau und Unabhängigkeit: Die Daten sollten mindestens auf Intervallskalenniveau vorliegen, und die Beobachtungen sollten unabhängig voneinander sein.
+  
+  ")
+  
+  print("Vorbedingungen prüfen")
+  # Berechnung der Differenzen
+  differences <- i1_w_MW - i1_f_MW
+  
+  # Shapiro-Wilk-Test zur Überprüfung der Normalverteilung
+  shapiro_test <- shapiro.test(differences)
+  print(shapiro_test)
+  
+  # t-Test durchführen
+  print("t-Test durchführen")
+  t_test <- t.test(i1_w_MW, i1_f_MW, paired = TRUE)
+  print(t_test)
+  
+  # Effektstärke mittels Cohens d berechnen
+  cat("Effektstärke ermitteln")
+  cd <- cohen.d(i1_w_MW, i1_f_MW)
+  print(cd)
+}
 ```
 
-### Effektstärke mittels Cohen's d berechnen
 ```{r echo=FALSE}
-cd <- cohen.d(daten$i1_ue_f_MW, daten$i1_ue_w_MW)
-print(cd)
-
+fn_wilcoxon <- function (i1_w_MW, i1_f_MW) {
+  cat("Die Voraussetzungen für den Wilcoxon-Vorzeichen-Rang-Test sind:
+  
+  1. Verbundene Stichproben: Die Daten müssen aus verbundenen oder gepaarten Stichproben stammen, was bei einer Within-Subject-Studie der Fall ist.
+  2. Ordinalskala oder höher: Die Daten sollten mindestens auf einer Ordinalskala vorliegen.
+  3. Symmetrie der Differenzenverteilung: Dies ist weniger streng als die Normalverteilungsannahme beim t-Test, aber es wird bevorzugt, dass die Verteilung der Differenzen symmetrisch ist.
+  
+  ")
+  
+  print("Vorbedingungen prüfen")
+  # Berechnung der Differenzen
+  differences <- i1_w_MW - i1_f_MW
+  # Erstellung eines Histogramms und eines Boxplots für die Differenzen
+  par(mfrow = c(1, 1))
+  # Histogramm
+  hist(differences, main = "Histogramm der Differenzen", xlab = "Differenzen", col = "blue", border = "black")
+  # Boxplot
+  boxplot(differences, main = "Boxplot der Differenzen", ylab = "Differenzen", col = "lightblue")
+  # Q-Q-Plot
+  qqnorm(differences, main = "Q-Q-Plot der Differenzen", xlab = "Theoretische Quantile", ylab = "Stichproben Quantile")
+  qqline(differences, col = "red",)
+  
+  par(mfrow=c(1,1))
+  
+  print("Wilcoxon-Vorzeichen-Rang-Test durchführen")
+  
+  result <- wilcox.test(i1_f_MW, i1_w_MW, paired = TRUE)
+  print(result)
+  
+  # Effektstärke für den Wilcoxon-Test berechnen
+  n <- length(differences)
+  z_wilcoxon <- (result$statistic - n * (n + 1) / 4) / sqrt(n * (n + 1) * (2 * n + 1) / 24)
+  r_wilcoxon <- z_wilcoxon / sqrt(n)
+  cat("Effektstärke (r) für den Wilcoxon-Test: ", r_wilcoxon, "\n\n")
+}
 ```
 
-### Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
+
 ```{r echo=FALSE}
-result <- wilcox.test(daten$i1_ue_f_MW, daten$i1_ue_w_MW, paired = TRUE)
-print(result)
+fn_sign <- function (i1_w_MW, i1_f_MW) {
+  cat("Voraussetzungen für den Vorzeichentest:
+  
+  1. Verbundene Stichproben: Wie beim Wilcoxon-Test müssen die Daten aus gepaarten oder verbundenen Stichproben stammen.
+  2. Mediansymmetrie: Der Vorzeichentest setzt voraus, dass die Mediansymmetrie zwischen den Paaren besteht. Das bedeutet, dass die Wahrscheinlichkeit einer positiven Differenz genauso groß ist wie die einer negativen Differenz.
+  3. Ordinale oder höhere Skalenniveaus: Die Daten sollten mindestens auf einer Ordinalskala vorliegen.
+  
+  ")
+  
+  print("Vorzeichen-Test durchführen")
+  # Berechnung der Differenzen
+  differences <- i1_w_MW - i1_f_MW
+  sign_test_result <- SIGN.test(differences)
+  print(sign_test_result)
+  
+  print("Effektstärke für den Vorzeichen-Test beurteilen")
+  # Qualitative Beurteilung der Effektstärke für den Vorzeichentest
+  # Anzahl der positiven und negativen Differenzen
+  positive_differences <- sum(differences > 0)
+  negative_differences <- sum(differences < 0)
+  cat("Anzahl positiver Differenzen: ", positive_differences, "\n")
+  cat("Anzahl negativer Differenzen: ", negative_differences, "\n")
+}
 ```
 
-### Grafische Analyse
+# Analyse der Diskrepanzerkennung
+```
+i1_w_MW <- daten$i1_dd_w_MW 
+i1_f_MW <- daten$i1_dd_f_MW
+```
+
+## Deskriptive Statistik
 ```{r echo=FALSE}
-boxplot(daten$i1_ue_w_MW, daten$i1_ue_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = "Initiale Überraschung")
+fn_descriptive_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
 ```
 
-## Manova der kombinierten Daten
+## Grafische Analyse
 ```{r echo=FALSE}
-# Vorbereiten der Daten für MANOVA
-# Erstellen eines neuen DataFrames, das 'w' und 'f' Werte als separate Fälle behandelt
-manova_data <- rbind(
-  data.frame(dd = daten$i1_dd_w_MW, ue = daten$i1_ue_w_MW, Truth = 'w'),
-  data.frame(dd = daten$i1_dd_f_MW, ue = daten$i1_ue_f_MW, Truth = 'f')
-)
-
-# Durchführen der MANOVA
-manova_results <- manova(cbind(dd, ue) ~ Truth, data = manova_data)
-
-# Anzeigen der Ergebnisse
-print(manova_results)
-summary(manova_results, test = "Wilks")
-
-print("summary.aov(manova_results)")
-summary.aov(manova_results)
+fn_graphical_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW, title = "Diskrepanzerkennung")
 ```
 
-## Anhang
-### Daten
+## t-Test 
+```{r echo=FALSE}
+fn_tTest(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
+```
+
+## Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
+```{r echo=FALSE}
+fn_wilcoxon(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
+```
+
+## Nicht parametrischer Test mittels Vorzeichen-Test
+```{r echo=FALSE}
+fn_sign(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
+```
+
+\newpage
+# Analyse der initialen Überraschung
+```
+i1_w_MW <- daten$i1_ue_w_MW 
+i1_f_MW <- daten$i1_ue_f_MW
+```
+
+## Deskriptive Statistik
+```{r echo=FALSE}
+fn_descriptive_analysis(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
+```
+
+## Grafische Analyse
+```{r echo=FALSE}
+fn_graphical_analysis(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW, title = "Initiale Überraschung")
+```
+
+## t-Test 
+```{r echo=FALSE}
+fn_tTest(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
+```
+
+## Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
+```{r echo=FALSE}
+fn_wilcoxon(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
+```
+
+## Nicht parametrischer Test mittels Vorzeichen-Test
+```{r echo=FALSE}
+fn_sign(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
+```
+
+# Anhang
+## Daten
 ```{r echo=FALSE}
 knitr::kable(head(daten, n=1000), "pipe")
-#print(daten, n = 1000)
 ```
