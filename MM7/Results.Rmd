@@ -68,7 +68,7 @@ fn_tTest <- function (i1_w_MW, i1_f_MW) {
   
   print("Vorbedingungen prüfen")
   # Berechnung der Differenzen
-  differences <- i1_w_MW - i1_f_MW
+  differences <- i1_f_MW - i1_w_MW
   
   # Shapiro-Wilk-Test zur Überprüfung der Normalverteilung
   shapiro_test <- shapiro.test(differences)
@@ -76,12 +76,12 @@ fn_tTest <- function (i1_w_MW, i1_f_MW) {
   
   # t-Test durchführen
   print("t-Test durchführen")
-  t_test <- t.test(i1_w_MW, i1_f_MW, paired = TRUE)
+  t_test <- t.test(i1_f_MW, i1_w_MW, paired = TRUE)
   print(t_test)
   
   # Effektstärke mittels Cohens d berechnen
   cat("Effektstärke ermitteln")
-  cd <- cohen.d(i1_w_MW, i1_f_MW)
+  cd <- cohen.d(i1_f_MW, i1_w_MW)
   print(cd)
 }
 ```
@@ -98,7 +98,7 @@ fn_wilcoxon <- function (i1_w_MW, i1_f_MW) {
   
   print("Vorbedingungen prüfen")
   # Berechnung der Differenzen
-  differences <- i1_w_MW - i1_f_MW
+  differences <- i1_f_MW - i1_w_MW
   # Erstellung eines Histogramms und eines Boxplots für die Differenzen
   par(mfrow = c(1, 1))
   # Histogramm
@@ -137,7 +137,7 @@ fn_sign <- function (i1_w_MW, i1_f_MW) {
   
   print("Vorzeichen-Test durchführen")
   # Berechnung der Differenzen
-  differences <- i1_w_MW - i1_f_MW
+  differences <- i1_f_MW - i1_w_MW
   sign_test_result <- SIGN.test(differences)
   print(sign_test_result)
   
