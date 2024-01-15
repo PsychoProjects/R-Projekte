@@ -28,6 +28,10 @@ options(dplyr.summarise.inform = FALSE)
 
 # Daten einlesen
 daten <- read_excel("Mittelwerte_MM7_korrigiert.xlsx")
+
+fn_diff_hist <- function(differences){
+    hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), main = "Histogramm der Differenzen", xlab = "Differenzen", ylab = "Häufigkeit", col = "lightblue", border = "black")
+}
 ```
 
 
@@ -51,8 +55,8 @@ fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, range = c(0,1), title = ""){
   boxplot(i1_w_MW, i1_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = title)
 
   par(mfrow = c(1, 2), pty = "s")
-  hist(i1_w_MW, breaks = range, main = "erlebnisbasiert", xlab = "Rating", col = "blue", border = "black")
-  hist(i1_f_MW, breaks = range, main = "nicht erlebnisbasiert", xlab = "Rating", col = "blue", border = "black")
+  hist(i1_w_MW, breaks = range, main = "erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
+  hist(i1_f_MW, breaks = range, main = "nicht erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
   par(mfrow = c(1, 1))
 }
 ```
@@ -73,7 +77,7 @@ fn_tTest <- function (i1_w_MW, i1_f_MW, differences) {
   
   # Effektstärke mittels Cohens d berechnen
   cat(">>> Effektstärke gemäß Cohen's d")
-  cd <- cohen.d(i1_f_MW, i1_w_MW)
+  cd <- cohen.d(i1_f_MW, i1_w_MW, paired = TRUE)
   print(cd)
 }
 ```
@@ -83,7 +87,7 @@ fn_wilcoxon <- function (i1_w_MW, i1_f_MW, differences) {
   cat(">>> Vorbedingungen prüfen")
 
   # Histogramm
-  hist(differences, breaks = seq(min(differences) - 0.1, max(differences) + 0.1, by = 0.1), main = "Histogramm der Differenzen", xlab = "Differenzen", ylab = "Häufigkeit", col = "blue", border = "black")
+  fn_diff_hist(differences)
   # Boxplot
   boxplot(differences, main = "Boxplot der Differenzen", ylab = "Differenzen", col = "lightblue")
 
@@ -115,6 +119,31 @@ fn_sign <- function (i1_w_MW, i1_f_MW, differences) {
   r <- abs(z) / sqrt(n)
 
   cat("Effektstärke (r) für den Vorzeichen-Test: ", r, "\n\n")
+}
+```
+
+```{r echo=FALSE}
+fn_sum_analysis <- function(){
+  cat("In dieser Analyse werden die Werte der Diskrepanzerkennung und der Initialen Überraschung getrennt nach erlebnisbasiert (w|f) addiert, wobei die Werte der Initialen Überraschung auf Werte zwischen 0 und 1 normiert werden, damit diese auf dem Skalenniveau der Diskrepanzerkennung liegen.\n\n")
+
+  f_daten <- daten$i1_dd_f_MW + (daten$i1_ue_f_MW -1 ) / 2
+  w_daten <- daten$i1_dd_w_MW + (daten$i1_ue_w_MW -1 ) / 2
+  differences <- f_daten - w_daten
+ 
+  cat(">>> Analyse auf Normalverteilung der Differenzen\n") 
+  shapiro_test <- shapiro.test(differences)
+  print(shapiro_test)
+
+  cat(">>> Grafische Beurteilung der Normalverteilung der Differenzen\n")
+  fn_diff_hist(differences)
+
+  cat(">>> t-Test\n")
+  t_test <- t.test(f_daten, w_daten, paired = TRUE )
+  print(t_test)
+  
+  cat(">>> Effektstärkte gemäß Cohen's d\n")
+  c = cohen.d(f_daten, w_daten, paired = TRUE)
+  print(c)
 }
 ```
 
@@ -192,7 +221,13 @@ fn_sign(i1_w_MW = daten$i1_ue_w_MW,
         i1_f_MW = daten$i1_ue_f_MW, 
         differences = (daten$i1_ue_f_MW - daten$i1_ue_w_MW))
 ```
+\newpage
+# Analyse der Differenzen zwischen f- und w-Werten
+```{r echo=FALSE}
+fn_sum_analysis()
+```
 
+\newpage
 # Anhang
 ## Daten
 ```{r echo=FALSE}
