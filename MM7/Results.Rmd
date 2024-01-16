@@ -32,25 +32,20 @@ daten <- read_excel("Mittelwerte_MM7_korrigiert.xlsx")
 fn_diff_hist <- function(differences){
     hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), main = "Histogramm der Differenzen", xlab = "Differenzen", ylab = "Häufigkeit", col = "lightblue", border = "black")
 }
-```
 
-
-```{r echo=FALSE, render=lemon_print}
 fn_descriptive_analysis <- function(i1_w_MW, i1_f_MW){
-  cat(">>> i1_w_MW")
+  cat(">>> i1_w_MW\n")
   print(summary(i1_w_MW, digits = 3))
   cat("\n")
   print(describe(i1_w_MW))
   cat("\n\n")
 
-  cat(">>> i1_f_MW")
+  cat(">>> i1_f_MW\n")
   print(summary(i1_f_MW, digits = 3))
   cat("\n")
   print(describe(i1_f_MW))
 }
-```
 
-```{r echo=FALSE}
 fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, range = c(0,1), title = ""){
   boxplot(i1_w_MW, i1_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = title)
 
@@ -59,75 +54,66 @@ fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, range = c(0,1), title = ""){
   hist(i1_f_MW, breaks = range, main = "nicht erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
   par(mfrow = c(1, 1))
 }
-```
 
-
-```{r echo=FALSE}
 fn_tTest <- function (i1_w_MW, i1_f_MW, differences) {
-  cat(">>> Vorbedingungen prüfen")
+  cat(">>> Vorbedingungen prüfen\n")
 
   # Shapiro-Wilk-Test zur Überprüfung der Normalverteilung
   shapiro_test <- shapiro.test(differences)
   print(shapiro_test)
   
   # t-Test durchführen
-  cat(">>> t-Test")
+  cat(">>> t-Test\n")
   t_test <- t.test(i1_f_MW, i1_w_MW, paired = TRUE)
   print(t_test)
   
   # Effektstärke mittels Cohens d berechnen
-  cat(">>> Effektstärke gemäß Cohen's d")
+  cat(">>> Effektstärke gemäß Cohen's d\n")
   cd <- cohen.d(i1_f_MW, i1_w_MW, paired = TRUE)
   print(cd)
 }
-```
 
-```{r echo=FALSE}
 fn_wilcoxon <- function (i1_w_MW, i1_f_MW, differences) {
-  cat(">>> Vorbedingungen prüfen")
+  cat(">>> Vorbedingungen prüfen\n")
 
   # Histogramm
   fn_diff_hist(differences)
   # Boxplot
   boxplot(differences, main = "Boxplot der Differenzen", ylab = "Differenzen", col = "lightblue")
 
-  cat(">>> Wilcoxon-Vorzeichen-Rang-Test")
+  cat(">>> Wilcoxon-Vorzeichen-Rang-Test\n")
   result <- wilcox.exact(i1_f_MW, i1_w_MW, paired = TRUE)
   print(result)
   
   # Effektstärke für den Wilcoxon-Test berechnen
-  cat(">>> Effektstärke gemäß rangbasiertem Effektgrößenindex")
+  cat(">>> Effektstärke gemäß rangbasiertem Effektgrößenindex\n")
   n <- length(differences)
   z <- qnorm(result$p.value / 2)
   r <- abs(z) / sqrt(n)
   cat("Effektstärke (r) für den Wilcoxon-Test: ", r, "\n\n")
 }
-```
 
-```{r echo=FALSE}
 fn_sign <- function (i1_w_MW, i1_f_MW, differences) {
-  cat(">>> Vorzeichen-Test")
+  cat(">>> Vorzeichen-Test\n")
 
   # Test durchführen (library BSDA)
   result <- SIGN.test(differences, md=0, alternative="two.sided", conf.level=0.95)
   print(result)
   
   # Effektstärke für den Vorzeichen-Test beurteilen
-  cat(">>> Effektstärke gemäß rangbasiertem Effektgrößenindex")
+  cat(">>> Effektstärke gemäß rangbasiertem Effektgrößenindex\n")
   n <- length(differences) # Anzahl der Beobachtungen
   z <- qnorm(result$p.value / 2) # Berechnung der Z-Statistik
   r <- abs(z) / sqrt(n)
 
   cat("Effektstärke (r) für den Vorzeichen-Test: ", r, "\n\n")
 }
-```
 
-```{r echo=FALSE}
 fn_sum_analysis <- function(){
   cat("In dieser Analyse werden die Werte der Diskrepanzerkennung und der Initialen Überraschung getrennt nach erlebnisbasiert (w|f) addiert, wobei die Werte der Initialen Überraschung auf Werte zwischen 0 und 1 normiert werden, damit diese auf dem Skalenniveau der Diskrepanzerkennung liegen.\n\n")
 
-  f_daten <- daten$i1_dd_f_MW + (daten$i1_ue_f_MW -1 ) / 2
-  w_daten <- daten$i1_dd_w_MW + (daten$i1_ue_w_MW -1 ) / 2
+  f_daten <- daten$i1_dd_f_MW + (daten$i1_ue_f_MW - 1) / 2
+  w_daten <- daten$i1_dd_w_MW + (daten$i1_ue_w_MW - 1) / 2
   differences <- f_daten - w_daten
  
   cat(">>> Analyse auf Normalverteilung der Differenzen\n") 
