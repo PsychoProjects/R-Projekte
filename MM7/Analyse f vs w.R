@@ -18,7 +18,7 @@ print(shapiro_test)
 t_test <- t.test(f_data, w_data, paired = TRUE )
 print(t_test)
 
-c = cohen.d(f_data, w_data, paired = TRUE)
+c <- cohen.d(f_data, w_data, paired = TRUE)
 print(c)
 
 boxplot(differences)
