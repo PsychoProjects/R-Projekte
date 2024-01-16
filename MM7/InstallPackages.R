@@ -1,6 +1,7 @@
 install.packages("apa")
 install.packages("BSDA")
 install.packages("car")
+install.packages("coin")
 install.packages("datasets")
 install.packages("dplyr")
 install.packages("effsize")
