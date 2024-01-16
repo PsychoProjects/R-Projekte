@@ -42,18 +42,15 @@ fn_tTest <- function (i1_w_MW, i1_f_MW, differences) {
   cat(">>> Vorbedingungen prüfen\n")
   
   # Shapiro-Wilk-Test zur Überprüfung der Normalverteilung
-  shapiro_test <- shapiro.test(differences)
-  print(shapiro_test)
-  
+  shapiro_test <- shapiro.test(differences) %>% print() 
+
   # t-Test durchführen
   cat(">>> t-Test\n")
-  t_test <- t.test(i1_f_MW, i1_w_MW, paired = TRUE)
-  print(t_test)
+  t_test <- t.test(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
   
   # Effektstärke mittels Cohens d berechnen
   cat(">>> Effektstärke gemäß Cohen's d\n")
-  cd <- effsize::cohen.d(i1_f_MW, i1_w_MW, paired = TRUE)
-  print(cd)
+  cohensd <- effsize::cohen.d(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
 }
 
 fn_wilcoxon <- function (i1_w_MW, i1_f_MW, differences) {
@@ -65,9 +62,8 @@ fn_wilcoxon <- function (i1_w_MW, i1_f_MW, differences) {
   boxplot(differences, main = "Boxplot der Differenzen", ylab = "Differenzen", col = "lightblue")
   
   cat(">>> Wilcoxon-Vorzeichen-Rang-Test\n")
-  result <- wilcox.exact(i1_f_MW, i1_w_MW, paired = TRUE)
-  print(result)
-  
+  result <- wilcox.exact(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
+
   # Effektstärke für den Wilcoxon-Test berechnen
   cat(">>> Effektstärke gemäß rangbasiertem Effektgrößenindex\n")
   n <- length(differences)
@@ -80,9 +76,8 @@ fn_sign <- function (i1_w_MW, i1_f_MW, differences) {
   cat(">>> Vorzeichen-Test\n")
   
   # Test durchführen (library BSDA)
-  result <- SIGN.test(differences, md=0, alternative="two.sided", conf.level=0.95)
-  print(result)
-  
+  result <- SIGN.test(differences, md=0, alternative="two.sided", conf.level=0.95) %>% print() 
+
   # Effektstärke für den Vorzeichen-Test beurteilen
   cat(">>> Effektstärke gemäß rangbasiertem Effektgrößenindex\n")
   n <- length(differences) # Anzahl der Beobachtungen
@@ -93,26 +88,21 @@ fn_sign <- function (i1_w_MW, i1_f_MW, differences) {
 }
 
 fn_sum_analysis <- function(){
-  cat("In dieser Analyse werden die Werte der Diskrepanzerkennung und der Initialen Überraschung getrennt nach erlebnisbasiert (w|f) addiert, wobei die Werte der Initialen Überraschung auf Werte zwischen 0 und 1 normiert werden, damit diese auf dem Skalenniveau der Diskrepanzerkennung liegen.\n\n")
-  
   f_daten <- daten$i1_dd_f_MW + (daten$i1_ue_f_MW - 1) / 2
   w_daten <- daten$i1_dd_w_MW + (daten$i1_ue_w_MW - 1) / 2
   differences <- f_daten - w_daten
   
   cat(">>> Analyse auf Normalverteilung der Differenzen\n") 
-  shapiro_test <- shapiro.test(differences)
-  print(shapiro_test)
-  
+  shapiro_test <- shapiro.test(differences) %>% print() 
+
   cat(">>> Grafische Beurteilung der Normalverteilung der Differenzen\n")
   hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), main = "Histogramm der Differenzen", xlab = "Differenzen", ylab = "Häufigkeit", col = "lightblue", border = "black")
   
   cat(">>> t-Test\n")
-  t_test <- t.test(f_daten, w_daten, paired = TRUE )
-  print(t_test)
-  
+  t_test <- t.test(f_daten, w_daten, paired = TRUE ) %>% print() 
+
   cat(">>> Effektstärkte gemäß Cohen's d\n")
-  c = effsize::cohen.d(f_daten, w_daten, paired = TRUE)
-  print(c)
+  cohensd = effsize::cohen.d(f_daten, w_daten, paired = TRUE) %>% print() 
 }
 
 fn_main <- function(){
