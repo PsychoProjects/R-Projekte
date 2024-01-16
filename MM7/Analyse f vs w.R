@@ -10,6 +10,7 @@ w_data <- data$i1_dd_w_MW + (data$i1_ue_w_MW - 1) / 2
 differences <- f_data - w_data
 
 n_data <- data.frame(w_data, f_data, differences)
+View(n_data)
 
 shapiro_test <- shapiro.test(differences)
 print(shapiro_test)
@@ -23,7 +24,7 @@ print(c)
 boxplot(differences)
 hist(differences)
 
-par(mfrow = c(1,2))
+par(mfrow = c(1, 2))
 hist(w_data)
 hist(f_data)
-par(mfrow = c(1,1))
+par(mfrow = c(1, 1))
