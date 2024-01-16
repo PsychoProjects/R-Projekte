@@ -15,7 +15,7 @@ View(n_data)
 shapiro_test <- shapiro.test(differences)
 print(shapiro_test)
 
-t_test <- t.test(f_data, w_data, paired = TRUE )
+t_test <- t.test(f_data, w_data, paired = TRUE)
 print(t_test)
 
 c <- cohen.d(f_data, w_data, paired = TRUE)
