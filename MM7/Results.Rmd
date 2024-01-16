@@ -2,7 +2,9 @@
 title: "Ergebnisse"
 author: "Najat Brüne"
 date: "`r Sys.Date()`"
-output: word_document
+output: 
+  word_document:
+    reference_docx: "Template.docx"
 ---
 
 ```{r setup, include=FALSE}
