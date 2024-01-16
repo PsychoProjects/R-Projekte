@@ -29,12 +29,12 @@ fn_descriptive_analysis <- function(i1_w_MW, i1_f_MW){
   print(describe(i1_f_MW))
 }
 
-fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, range = c(0,1), title = ""){
+fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, title = ""){
   boxplot(i1_w_MW, i1_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = title)
   
   par(mfrow = c(1, 2), pty = "s")
-  hist(i1_w_MW, breaks = range, main = "erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
-  hist(i1_f_MW, breaks = range, main = "nicht erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
+  hist(i1_w_MW, breaks = seq(min(i1_w_MW) - 0.1, max(i1_w_MW) + 0.1, by = 0.1), main = "erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
+  hist(i1_f_MW, breaks = seq(min(i1_f_MW) - 0.1, max(i1_f_MW) + 0.1, by = 0.1), main = "nicht erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
   par(mfrow = c(1, 1))
 }
 
@@ -88,11 +88,12 @@ fn_sign <- function (i1_w_MW, i1_f_MW, differences) {
 }
 
 fn_sum_analysis <- function(){
+  # Bildung der Summen bei Normierung der ue-Daten auf Werte in [0;1]
   f_daten <- daten$i1_dd_f_MW + (daten$i1_ue_f_MW - 1) / 2
   w_daten <- daten$i1_dd_w_MW + (daten$i1_ue_w_MW - 1) / 2
-  differences <- f_daten - w_daten
   
   cat(">>> Analyse auf Normalverteilung der Differenzen\n") 
+  differences <- f_daten - w_daten
   shapiro_test <- shapiro.test(differences) %>% print() 
 
   cat(">>> Grafische Beurteilung der Normalverteilung der Differenzen\n")
@@ -112,7 +113,7 @@ fn_main <- function(){
   
   
   ## Grafische Analyse
-  fn_graphical_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW, range = seq(0, 1, by = 0.1), title = "Diskrepanzerkennung")
+  fn_graphical_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW, title = "Diskrepanzerkennung")
   
   
   ## t-Test
@@ -138,7 +139,7 @@ fn_main <- function(){
   fn_descriptive_analysis(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
   
   ## Grafische Analyse
-  fn_graphical_analysis(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW, range = seq(1, 3, by = 0.1), title = "Initiale Überraschung")
+  fn_graphical_analysis(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW, title = "Initiale Überraschung")
   
   ## t-Test
   fn_tTest(i1_w_MW = daten$i1_ue_w_MW, 
