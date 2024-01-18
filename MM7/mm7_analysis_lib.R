@@ -51,20 +51,23 @@ fn_tTest <- function (i1_w_MW, i1_f_MW, differences) {
   cohensd <- effsize::cohen.d(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
 }
 
+fn_median_effecsize <- function (differences, pValue) {
+  n <- length(differences)
+  z <- qnorm(pValue / 2)
+  fn_median_effecsize <- (abs(z) / sqrt(n))
+}
+
 fn_wilcoxon <- function (i1_w_MW, i1_f_MW, differences) {
   cat(">>> Vorbedingungen prüfen\n")
   
-  # Boxplot
   boxplot(differences, main = "Boxplot der Differenzen", ylab = "Differenzen", col = "lightblue")
   
   cat(">>> Wilcoxon-Vorzeichen-Rang-Test\n")
   result <- wilcox.exact(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
 
-  # Effektstärke für den Wilcoxon-Test berechnen
   cat(">>> Effektstärke gemäß rangbasiertem Effektgrößenindex\n")
-  n <- length(differences)
-  z <- qnorm(result$p.value / 2)
-  r <- abs(z) / sqrt(n)
+
+  r <- fn_median_effecsize(differences = differences, pValue =  result$p.value)
   cat("Effektstärke (r) für den Wilcoxon-Test: ", r, "\n\n")
 }
 
@@ -76,10 +79,8 @@ fn_sign <- function (i1_w_MW, i1_f_MW, differences) {
 
   # Effektstärke für den Vorzeichen-Test beurteilen
   cat(">>> Effektstärke gemäß rangbasiertem Effektgrößenindex\n")
-  n <- length(differences) # Anzahl der Beobachtungen
-  z <- qnorm(result$p.value / 2) # Berechnung der Z-Statistik
-  r <- abs(z) / sqrt(n)
-  
+
+  r <- fn_median_effecsize(differences = differences, pValue =  result$p.value)
   cat("Effektstärke (r) für den Vorzeichen-Test: ", r, "\n\n")
 }
 
