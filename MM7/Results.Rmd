@@ -8,6 +8,10 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+library(knitr)
+library(lemon)
+library(kableExtra)
+
 source("mm7_analysis_lib.R", local = knitr::knit_global())
 
 knitr::opts_chunk$set(echo = TRUE)
@@ -109,7 +113,8 @@ fn_sign(i1_w_MW = daten$i1_ue_w_MW,
 \newpage
 
 # Analyse der Differenzen zwischen f- und w-Werten
-In dieser Analyse werden die Werte der Diskrepanzerkennung und der Initialen Überraschung getrennt nach erlebnisbasiert (w|f) addiert, wobei die Werte der Initialen Überraschung auf Werte zwischen 0 und 1 normiert werden, damit diese auf dem Skalenniveau der Diskrepanzerkennung liegen.
+
+In dieser Analyse werden die Werte der Diskrepanzerkennung und der Initialen Überraschung getrennt nach erlebnisbasiert (w\|f) addiert, wobei die Werte der Initialen Überraschung auf Werte zwischen 0 und 1 normiert werden, damit diese auf dem Skalenniveau der Diskrepanzerkennung liegen.
 
 ```{r echo=FALSE}
 fn_sum_analysis()

@@ -1,14 +1,9 @@
 # Pakete laden
 library(readxl)
-library(psych)
 library(dplyr)
+library(psych)
 library(datasets)
-library(tidyverse)
 library(effsize)
-library(knitr)
-library(car)
-library(lemon)
-library(kableExtra)
 library(BSDA)
 library(ggplot2)
 library(exactRankTests)
@@ -18,18 +13,18 @@ daten <- read_excel("Mittelwerte_MM7_korrigiert.xlsx")
 
 fn_descriptive_analysis <- function(i1_w_MW, i1_f_MW){
   cat(">>> i1_w_MW\n")
-  print(summary(i1_w_MW, digits = 3))
+  summary(i1_w_MW, digits = 3) %>% print()
   cat("\n")
-  print(describe(i1_w_MW))
+  describe(i1_w_MW)  %>% print()
   cat("\n\n")
   
   cat(">>> i1_f_MW\n")
-  print(summary(i1_f_MW, digits = 3))
+  summary(i1_f_MW, digits = 3) %>% print()
   cat("\n")
-  print(describe(i1_f_MW))
+  describe(i1_f_MW) %>% print()
 }
 
-fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, title = ""){
+fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, title = "") {
   boxplot(i1_w_MW, i1_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = title)
   
   par(mfrow = c(1, 2), pty = "s")
@@ -40,6 +35,9 @@ fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, title = ""){
 
 fn_tTest <- function (i1_w_MW, i1_f_MW, differences) {
   cat(">>> Vorbedingungen prüfen\n")
+
+  cat(">>> Grafische Beurteilung der Normalverteilung der Differenzen\n")
+  hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), main = "Histogramm der Differenzen", xlab = "Differenzen", ylab = "Häufigkeit", col = "lightblue", border = "black")
   
   # Shapiro-Wilk-Test zur Überprüfung der Normalverteilung
   shapiro_test <- shapiro.test(differences) %>% print() 
@@ -56,8 +54,6 @@ fn_tTest <- function (i1_w_MW, i1_f_MW, differences) {
 fn_wilcoxon <- function (i1_w_MW, i1_f_MW, differences) {
   cat(">>> Vorbedingungen prüfen\n")
   
-  # Histogramm
-  hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), main = "Histogramm der Differenzen", xlab = "Differenzen", ylab = "Häufigkeit", col = "lightblue", border = "black")
   # Boxplot
   boxplot(differences, main = "Boxplot der Differenzen", ylab = "Differenzen", col = "lightblue")
   
@@ -87,26 +83,15 @@ fn_sign <- function (i1_w_MW, i1_f_MW, differences) {
   cat("Effektstärke (r) für den Vorzeichen-Test: ", r, "\n\n")
 }
 
-fn_sum_analysis <- function(){
+fn_sum_analysis <- function() {
   # Bildung der Summen bei Normierung der ue-Daten auf Werte in [0;1]
   f_daten <- daten$i1_dd_f_MW + (daten$i1_ue_f_MW - 1) / 2
   w_daten <- daten$i1_dd_w_MW + (daten$i1_ue_w_MW - 1) / 2
-  
-  cat(">>> Analyse auf Normalverteilung der Differenzen\n") 
-  differences <- f_daten - w_daten
-  shapiro_test <- shapiro.test(differences) %>% print() 
 
-  cat(">>> Grafische Beurteilung der Normalverteilung der Differenzen\n")
-  hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), main = "Histogramm der Differenzen", xlab = "Differenzen", ylab = "Häufigkeit", col = "lightblue", border = "black")
-  
-  cat(">>> t-Test\n")
-  t_test <- t.test(f_daten, w_daten, paired = TRUE ) %>% print() 
-
-  cat(">>> Effektstärkte gemäß Cohen's d\n")
-  cohensd = effsize::cohen.d(f_daten, w_daten, paired = TRUE) %>% print() 
+  fn_tTest(i1_w_MW = w_daten, i1_f_MW = f_daten, differences = (f_daten - w_daten))  
 }
 
-fn_main <- function(){
+fn_main <- function() {
   # Analyse der Diskrepanzerkennung
   ## Deskriptive Statistik
   fn_descriptive_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
