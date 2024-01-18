@@ -40,21 +40,21 @@ fn_tTest <- function (i1_w_MW, i1_f_MW, differences) {
   hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), main = "Histogramm der Differenzen", xlab = "Differenzen", ylab = "Häufigkeit", col = "lightblue", border = "black")
   
   # Shapiro-Wilk-Test zur Überprüfung der Normalverteilung
-  shapiro_test <- shapiro.test(differences) %>% print() 
+  shapiro.test(differences) %>% print() 
 
   # t-Test durchführen
   cat(">>> t-Test\n")
-  t_test <- t.test(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
+  t.test(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
   
   # Effektstärke mittels Cohens d berechnen
   cat(">>> Effektstärke gemäß Cohen's d\n")
-  cohensd <- effsize::cohen.d(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
+  effsize::cohen.d(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
 }
 
 fn_median_effecsize <- function (differences, pValue) {
   n <- length(differences)
   z <- qnorm(pValue / 2)
-  fn_median_effecsize <- (abs(z) / sqrt(n))
+  return(abs(z) / sqrt(n))
 }
 
 fn_wilcoxon <- function (i1_w_MW, i1_f_MW, differences) {
