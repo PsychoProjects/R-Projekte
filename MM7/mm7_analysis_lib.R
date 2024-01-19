@@ -7,6 +7,7 @@ library(effsize)
 library(BSDA)
 library(ggplot2)
 library(exactRankTests)
+library(coin)
 
 # Daten einlesen
 daten <- read_excel("Mittelwerte_MM7_korrigiert.xlsx")
@@ -39,21 +40,26 @@ fn_tTest <- function (i1_w_MW, i1_f_MW, differences) {
   cat(">>> Grafische Beurteilung der Normalverteilung der Differenzen\n")
   hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), main = "Histogramm der Differenzen", xlab = "Differenzen", ylab = "Häufigkeit", col = "lightblue", border = "black")
   
-  # Shapiro-Wilk-Test zur Überprüfung der Normalverteilung
+  cat(">>> Shapiro-Wilk-Test zur Überprüfung der Normalverteilung")
   shapiro.test(differences) %>% print() 
 
-  # t-Test durchführen
   cat(">>> t-Test\n")
-  t.test(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
+  result <- t.test(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
   
-  # Effektstärke mittels Cohens d berechnen
-  cat(">>> Effektstärke gemäß Cohen's d\n")
+  z <- fn_zValue_from_pValue(result$p.value)
+  cat("z-value: ", z, "\n\n")
+  
+  cat(">>> Effektstärke\n")
   effsize::cohen.d(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
 }
 
-fn_median_effecsize <- function (differences, pValue) {
+fn_zValue_from_pValue <- function(pValue) {
+  return(qnorm(pValue, ))
+}
+
+fn_pearson_r <- function (differences, pValue) {
   n <- length(differences)
-  z <- qnorm(pValue / 2)
+  z <- fn_zValue_from_pValue(pValue)
   return(abs(z) / sqrt(n))
 }
 
@@ -64,10 +70,12 @@ fn_wilcoxon <- function (i1_w_MW, i1_f_MW, differences) {
   
   cat(">>> Wilcoxon-Vorzeichen-Rang-Test\n")
   result <- wilcox.exact(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
-
-  cat(">>> Effektstärke gemäß rangbasiertem Effektgrößenindex\n")
-
-  r <- fn_median_effecsize(differences = differences, pValue =  result$p.value)
+  
+  z <- fn_zValue_from_pValue(result$p.value)
+  cat("z-value: ", z, "\n\n")
+  
+  cat(">>> Effektstärke (Pearson)\n\n")
+  r <- fn_pearson_r(differences, result$p.value)
   cat("Effektstärke (r) für den Wilcoxon-Test: ", r, "\n\n")
 }
 
@@ -76,11 +84,14 @@ fn_sign <- function (i1_w_MW, i1_f_MW, differences) {
   
   # Test durchführen (library BSDA)
   result <- SIGN.test(differences, md=0, alternative="two.sided", conf.level=0.95) %>% print() 
-
+  
+  z <- fn_zValue_from_pValue(result$p.value)
+  cat("z-value: ", z, "\n\n")
+  
   # Effektstärke für den Vorzeichen-Test beurteilen
-  cat(">>> Effektstärke gemäß rangbasiertem Effektgrößenindex\n")
+  cat(">>> Effektstärke (Pearson)\n\n")
 
-  r <- fn_median_effecsize(differences = differences, pValue =  result$p.value)
+  r <- fn_pearson_r(differences, result$p.value)
   cat("Effektstärke (r) für den Vorzeichen-Test: ", r, "\n\n")
 }
 
