@@ -22,51 +22,6 @@ options(dplyr.summarise.inform = FALSE)
 
 ```
 
-# Analyse der Diskrepanzerkennung
-
-```         
-i1_w_MW <- daten$i1_dd_w_MW 
-i1_f_MW <- daten$i1_dd_f_MW
-```
-
-## Deskriptive Statistik
-
-```{r echo=FALSE}
-fn_descriptive_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
-```
-
-## Grafische Analyse
-
-```{r echo=FALSE}
-fn_graphical_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW, title = "Diskrepanzerkennung")
-```
-
-## t-Test
-
-```{r echo=FALSE}
-fn_tTest(i1_w_MW = daten$i1_dd_w_MW, 
-         i1_f_MW = daten$i1_dd_f_MW, 
-         differences = (daten$i1_dd_f_MW - daten$i1_dd_w_MW))
-```
-
-## Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
-
-```{r echo=FALSE}
-fn_wilcoxon(i1_w_MW = daten$i1_dd_w_MW, 
-            i1_f_MW = daten$i1_dd_f_MW, 
-            differences = (daten$i1_dd_f_MW - daten$i1_dd_w_MW))
-```
-
-## Nicht parametrischer Test mittels Vorzeichen-Test
-
-```{r echo=FALSE}
-fn_sign(i1_w_MW = daten$i1_dd_w_MW, 
-        i1_f_MW = daten$i1_dd_f_MW, 
-        differences = (daten$i1_dd_f_MW - daten$i1_dd_w_MW))
-```
-
-\newpage
-
 # Analyse der initialen Überraschung
 
 ```         
@@ -89,25 +44,58 @@ fn_graphical_analysis(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW, ti
 ## t-Test
 
 ```{r echo=FALSE}
-fn_tTest(i1_w_MW = daten$i1_ue_w_MW, 
-         i1_f_MW = daten$i1_ue_f_MW, 
-         differences = (daten$i1_ue_f_MW - daten$i1_ue_w_MW))
+fn_tTest(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
 ```
 
 ## Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
 
 ```{r echo=FALSE}
-fn_wilcoxon(i1_w_MW = daten$i1_ue_w_MW, 
-            i1_f_MW = daten$i1_ue_f_MW, 
-            differences = (daten$i1_ue_f_MW - daten$i1_ue_w_MW))
+fn_wilcoxon(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
 ```
 
 ## Nicht parametrischer Test mittels Vorzeichen-Test
 
 ```{r echo=FALSE}
-fn_sign(i1_w_MW = daten$i1_ue_w_MW, 
-        i1_f_MW = daten$i1_ue_f_MW, 
-        differences = (daten$i1_ue_f_MW - daten$i1_ue_w_MW))
+fn_sign(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
+```
+
+\newpage
+
+# Analyse der Diskrepanzerkennung
+
+```         
+i1_w_MW <- daten$i1_dd_w_MW 
+i1_f_MW <- daten$i1_dd_f_MW
+```
+
+## Deskriptive Statistik
+
+```{r deskriptive_Statistiken, echo=FALSE}
+fn_descriptive_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
+```
+
+## Grafische Analyse
+
+```{r grafische-Analyse, echo=FALSE}
+fn_graphical_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW, title = "Diskrepanzerkennung")
+```
+
+## t-Test
+
+```{r t-Test, echo=FALSE}
+fn_tTest(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
+```
+
+## Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
+
+```{r Wilcoxontest, echo=FALSE}
+fn_wilcoxon(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
+```
+
+## Nicht parametrischer Test mittels Vorzeichen-Test
+
+```{r Vorzeichentest, echo=FALSE}
+fn_sign(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
 ```
 
 \newpage
@@ -127,5 +115,5 @@ fn_sum_analysis()
 ## Daten
 
 ```{r echo=FALSE}
-knitr::kable(head(daten, n=1000), "pipe")
+knitr::kable(head(daten, n=100), "pipe")
 ```
