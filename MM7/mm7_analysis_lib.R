@@ -36,11 +36,14 @@ fn_descriptive_analysis <- function(i1_w_MW, i1_f_MW){
 
 # Funktion für die grafische Analyse der Grunddaten
 fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, title = "") {
-  boxplot(i1_w_MW, i1_f_MW, names = c("wahr", "falsch"), ylab = "Rating", xlab = "erlebnisbasisert", main = title)
+  boxplot(i1_w_MW, i1_f_MW, names = c("wahr", "falsch"), 
+          ylab = "Rating", xlab = "erlebnisbasisert", main = title)
   
   par(mfrow = c(1, 2), pty = "s")
-  hist(i1_w_MW, breaks = seq(min(i1_w_MW) - 0.1, max(i1_w_MW) + 0.1, by = 0.1), main = "erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
-  hist(i1_f_MW, breaks = seq(min(i1_f_MW) - 0.1, max(i1_f_MW) + 0.1, by = 0.1), main = "nicht erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
+  hist(i1_w_MW, breaks = seq(min(i1_w_MW) - 0.1, max(i1_w_MW) + 0.1, by = 0.1), 
+       main = "erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
+  hist(i1_f_MW, breaks = seq(min(i1_f_MW) - 0.1, max(i1_f_MW) + 0.1, by = 0.1), 
+       main = "nicht erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
   par(mfrow = c(1, 1))
 }
 
@@ -52,13 +55,16 @@ fn_tTest <- function (i1_w_MW, i1_f_MW) {
   differences = i1_f_MW - i1_w_MW
   
   cat(">>> Grafische Beurteilung der Normalverteilung der Differenzen\n")
-  hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), main = "Histogramm der Differenzen", xlab = "Differenzen", ylab = "Häufigkeit", col = "lightblue", border = "black")
+  hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), 
+       main = "Histogramm der Differenzen", xlab = "Differenzen", 
+       ylab = "Häufigkeit", col = "lightblue", border = "black")
   
   cat(">>> Shapiro-Wilk-Test zur Überprüfung der Normalverteilung")
   stats::shapiro.test(differences) %>% print() 
 
   cat(">>> t.test(i1_f_MW, i1_w_MW, paired = TRUE, alternative = two.sided\n")
-  result <- stats::t.test(i1_f_MW, i1_w_MW, paired = TRUE, alternative = "two.sided") %>% print() 
+  result <- stats::t.test(i1_f_MW, i1_w_MW, paired = TRUE, 
+                          alternative = "two.sided") %>% print() 
   
   z <- fn_zValue_from_pValue(result$p.value)
   cat("z-value: ", z, "\n\n")
@@ -87,9 +93,10 @@ fn_wilcoxon <- function (i1_w_MW, i1_f_MW) {
   
   boxplot(differences, main = "Boxplot der Differenzen", ylab = "Differenzen", col = "lightblue")
   
-  cat(">>> Wilcoxon-Vorzeichen-Rang-Test\n")
-  cat("    wilcox.test(i1_f_MW, i1_w_MW, paired = TRUE, alternative = two.sided)")
-  result <- stats::wilcox.test(i1_f_MW, i1_w_MW, paired = TRUE, alternative = "two.sided", conf.int = TRUE) %>% print() 
+  cat(">>> wilcox.test(i1_f_MW, i1_w_MW, paired = TRUE, alternative = two.sided)")
+  result <- stats::wilcox.test(i1_f_MW, i1_w_MW, paired = TRUE, 
+                               alternative = "two.sided", conf.int = TRUE) %>% print() 
+  
   z <- fn_zValue_from_pValue(result$p.value)
   cat("z-value: ", z, "\n\n")
   
@@ -100,12 +107,11 @@ fn_wilcoxon <- function (i1_w_MW, i1_f_MW) {
 
 # Funktion für die Prüfung und Durchführung des Vorzeichen-Tests
 fn_sign <- function (i1_w_MW, i1_f_MW) {
-  
   differences = i1_f_MW - i1_w_MW
 
-  cat(">>> Vorzeichen-Test\n")
-  cat("SIGN.test(i1_f_MW, i1_w_MW, md=0, paired = TRUE, alternative = two.sided")
-  result <- BSDA::SIGN.test(i1_f_MW, i1_w_MW, md=0, paired = TRUE, alternative = "two.sided", conf.int = TRUE) %>% print() 
+  cat(">>> SIGN.test(i1_f_MW, i1_w_MW, md=0, paired = TRUE, alternative = two.sided")
+  result <- BSDA::SIGN.test(i1_f_MW, i1_w_MW, md=0, paired = TRUE, 
+                            alternative = "two.sided", conf.int = TRUE) %>% print() 
   
   z <- fn_zValue_from_pValue(result$p.value)
   cat("z-value: ", z, "\n\n")
@@ -129,6 +135,15 @@ fn_sum_analysis <- function() {
   fn_tTest(i1_w_MW = w_daten, i1_f_MW = f_daten)  
 }
 
+# Funktion zur Analyse von Korrelationen
+fn_correlation_analysis <- function() {
+  i1_ue <- rbind(daten$i1_ue_w_MW, daten$i1_ue_f_MW)
+  i1_dd <- rbind(daten$i1_dd_w_MW, daten$i1_dd_f_MW)
+  
+  cor.test(i1_dd, i1_ue, method = "pearson") %>% print()
+  cor.test(i1_dd, i1_ue, method = "kendall") %>% print()
+  cor.test(i1_dd, i1_ue, method = "spearman", exact = FALSE) %>% print()
+}
 
 # Hauptfunktion für die Durchführung der gesamten Analyse
 fn_main <- function() {
@@ -156,5 +171,8 @@ fn_main <- function() {
   
   # Analyse der Differenzen zwischen f- und w-Werten
   fn_sum_analysis()
+  
+  # Untersuchung auf Korrelation zwischen Diskrepanzerkennung und initialer Überraschung
+  fn_correlation_analysis()
 }
 

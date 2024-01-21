@@ -110,6 +110,15 @@ fn_sum_analysis()
 
 \newpage
 
+# Analyse der Korrelation 
+Prüfung, ob die Werte der Diskrepanzerkennung mit den Werten der initialen Überraschung korrelieren.
+
+```{r echo=FALSE}
+fn_correlation_analysis()
+```
+
+\newpage
+
 # Anhang
 
 ## Daten
