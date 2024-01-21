@@ -57,14 +57,14 @@ fn_tTest <- function (i1_w_MW, i1_f_MW) {
   cat(">>> Shapiro-Wilk-Test zur Überprüfung der Normalverteilung")
   stats::shapiro.test(differences) %>% print() 
 
-  cat(">>> t-Test\n")
-  result <- stats::t.test(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
+  cat(">>> t.test(i1_f_MW, i1_w_MW, paired = TRUE, alternative = two.sided\n")
+  result <- stats::t.test(i1_f_MW, i1_w_MW, paired = TRUE, alternative = "two.sided") %>% print() 
   
   z <- fn_zValue_from_pValue(result$p.value)
   cat("z-value: ", z, "\n\n")
   
   cat(">>> Effektstärke\n")
-  effsize::cohen.d(i1_f_MW, i1_w_MW, paired = TRUE) %>% print() 
+  effsize::cohen.d(i1_f_MW, i1_w_MW, paired = TRUE, alternative = "two.sided") %>% print() 
 }
 
 
@@ -88,7 +88,8 @@ fn_wilcoxon <- function (i1_w_MW, i1_f_MW) {
   boxplot(differences, main = "Boxplot der Differenzen", ylab = "Differenzen", col = "lightblue")
   
   cat(">>> Wilcoxon-Vorzeichen-Rang-Test\n")
-  result <- stats::wilcox.test(i1_f_MW, i1_w_MW, paired = TRUE, correct = FALSE, alternative = "two.sided", conf.int = TRUE) %>% print() 
+  cat("    wilcox.test(i1_f_MW, i1_w_MW, paired = TRUE, alternative = two.sided)")
+  result <- stats::wilcox.test(i1_f_MW, i1_w_MW, paired = TRUE, alternative = "two.sided", conf.int = TRUE) %>% print() 
   z <- fn_zValue_from_pValue(result$p.value)
   cat("z-value: ", z, "\n\n")
   
@@ -103,7 +104,8 @@ fn_sign <- function (i1_w_MW, i1_f_MW) {
   differences = i1_f_MW - i1_w_MW
 
   cat(">>> Vorzeichen-Test\n")
-  result <- BSDA::SIGN.test(i1_f_MW, i1_w_MW, md=0, alternative="two.sided", conf.int = TRUE) %>% print() 
+  cat("SIGN.test(i1_f_MW, i1_w_MW, md=0, paired = TRUE, alternative = two.sided")
+  result <- BSDA::SIGN.test(i1_f_MW, i1_w_MW, md=0, paired = TRUE, alternative = "two.sided", conf.int = TRUE) %>% print() 
   
   z <- fn_zValue_from_pValue(result$p.value)
   cat("z-value: ", z, "\n\n")
@@ -120,6 +122,8 @@ fn_sum_analysis <- function() {
   w_daten <- daten$i1_dd_w_MW + (daten$i1_ue_w_MW - 1) / 2
 
   fn_descriptive_analysis(i1_w_MW = w_daten, i1_f_MW = f_daten)
+
+  fn_graphical_analysis(i1_w_MW = w_daten, i1_f_MW = f_daten, title = "Summen der Werte")
   
   cat("\n\n")
   fn_tTest(i1_w_MW = w_daten, i1_f_MW = f_daten)  
@@ -128,45 +132,27 @@ fn_sum_analysis <- function() {
 
 # Hauptfunktion für die Durchführung der gesamten Analyse
 fn_main <- function() {
-  # Analyse der Diskrepanzerkennung
-  ## Deskriptive Statistik
-  fn_descriptive_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
-  
-  
-  ## Grafische Analyse
-  fn_graphical_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW, title = "Diskrepanzerkennung")
-  
-  
-  ## t-Test
-  fn_tTest(i1_w_MW = daten$i1_dd_w_MW, 
-           i1_f_MW = daten$i1_dd_f_MW)
-  
-  ## Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
-  fn_wilcoxon(i1_w_MW = daten$i1_dd_w_MW, 
-              i1_f_MW = daten$i1_dd_f_MW)
-  
-  ## Nicht parametrischer Test mittels Vorzeichen-Test
-  fn_sign(i1_w_MW = daten$i1_dd_w_MW, 
-          i1_f_MW = daten$i1_dd_f_MW)
-          
   # Analyse der initialen Überraschung
-  ## Deskriptive Statistik
   fn_descriptive_analysis(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
   
-  ## Grafische Analyse
   fn_graphical_analysis(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW, title = "Initiale Überraschung")
   
-  ## t-Test
-  fn_tTest(i1_w_MW = daten$i1_ue_w_MW, 
-           i1_f_MW = daten$i1_ue_f_MW)
+  fn_tTest(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
   
-  ## Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
-  fn_wilcoxon(i1_w_MW = daten$i1_ue_w_MW, 
-              i1_f_MW = daten$i1_ue_f_MW)
+  fn_wilcoxon(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
   
-  ## Nicht parametrischer Test mittels Vorzeichen-Test
-  fn_sign(i1_w_MW = daten$i1_ue_w_MW, 
-          i1_f_MW = daten$i1_ue_f_MW)
+  fn_sign(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
+  
+  # Analyse der Diskrepanzerkennung
+  fn_descriptive_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
+
+  fn_graphical_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW, title = "Diskrepanzerkennung")
+  
+  fn_tTest(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
+  
+  fn_wilcoxon(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
+  
+  fn_sign(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
   
   # Analyse der Differenzen zwischen f- und w-Werten
   fn_sum_analysis()
