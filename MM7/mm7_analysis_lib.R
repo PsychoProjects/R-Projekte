@@ -38,8 +38,8 @@ fn_descriptive_analysis <- function(i1_w_MW, i1_f_MW){
 fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, title = "") {
   boxplot(i1_w_MW, i1_f_MW, names = c("wahr", "falsch"), 
           ylab = "Rating", xlab = "erlebnisbasisert", main = title)
-  
-  par(mfrow = c(1, 2), pty = "s")
+
+  par(mfrow = c(1, 2))
   hist(i1_w_MW, breaks = seq(min(i1_w_MW) - 0.1, max(i1_w_MW) + 0.1, by = 0.1), 
        main = "erlebnisbasiert", xlab = "Rating", col = "lightblue", border = "black")
   hist(i1_f_MW, breaks = seq(min(i1_f_MW) - 0.1, max(i1_f_MW) + 0.1, by = 0.1), 
@@ -137,8 +137,12 @@ fn_sum_analysis <- function() {
 
 # Funktion zur Analyse von Korrelationen
 fn_correlation_analysis <- function() {
-  i1_ue <- rbind(daten$i1_ue_w_MW, daten$i1_ue_f_MW)
-  i1_dd <- rbind(daten$i1_dd_w_MW, daten$i1_dd_f_MW)
+  i1_ue <- c(daten$i1_ue_w_MW, daten$i1_ue_f_MW)
+  i1_dd <- c(daten$i1_dd_w_MW, daten$i1_dd_f_MW)
+  
+  scatter.smooth(i1_dd, i1_ue, main = "Diskrepanzerkennungswert vs. Initialer Überraschungswert", 
+                 xlab = "Diskrepanzerkennungswert", ylab = "Initialer Überraschungswert", 
+                 pch = 19, col = "lightblue")
   
   cor.test(i1_dd, i1_ue, method = "pearson") %>% print()
   cor.test(i1_dd, i1_ue, method = "kendall") %>% print()
