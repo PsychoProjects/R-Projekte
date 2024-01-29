@@ -76,7 +76,7 @@ fn_tTest <- function (i1_w_MW, i1_f_MW) {
 
 # Hilfsfunktion für die Errechnung des z-Wertes aus dem p-Wert
 fn_zValue_from_pValue <- function(pValue) {
-  return(qnorm(pValue, ))
+  return(qnorm(pValue))
 }
 
 # Hilfsfunktion für die Errechnung der Effektstärke (Pearson)
