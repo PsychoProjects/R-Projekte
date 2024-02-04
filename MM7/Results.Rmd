@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 knit_print.data.frame <- lemon_print
 
-options(dplyr.summarise.inform = FALSE)
+options(dplyr.summarise.inform = TRUE)
 
 ```
 
@@ -33,31 +33,31 @@ i1_f_MW <- daten$i1_ue_f_MW
 
 ## Deskriptive Statistik
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 fn_descriptive_analysis(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
 ```
 
 ## Grafische Analyse
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 fn_graphical_analysis(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW, title = "Initiale Überraschung")
 ```
 
 ## t-Test
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 fn_tTest(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
 ```
 
 ## Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 fn_wilcoxon(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
 ```
 
 ## Nicht parametrischer Test mittels Vorzeichen-Test
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 fn_sign(i1_w_MW = daten$i1_ue_w_MW, i1_f_MW = daten$i1_ue_f_MW)
 ```
 
@@ -72,31 +72,31 @@ i1_f_MW <- daten$i1_dd_f_MW
 
 ## Deskriptive Statistik
 
-```{r deskriptive_Statistiken, echo=FALSE}
+```{r deskriptive_Statistiken, echo=TRUE}
 fn_descriptive_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
 ```
 
 ## Grafische Analyse
 
-```{r grafische-Analyse, echo=FALSE}
+```{r grafische-Analyse, echo=TRUE}
 fn_graphical_analysis(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW, title = "Diskrepanzerkennung")
 ```
 
 ## t-Test
 
-```{r t-Test, echo=FALSE}
+```{r t-Test, echo=TRUE}
 fn_tTest(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
 ```
 
 ## Nicht parametrischer Test mittels Wilcoxon-Vorzeichen-Rang-Test
 
-```{r Wilcoxontest, echo=FALSE}
+```{r Wilcoxontest, echo=TRUE}
 fn_wilcoxon(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
 ```
 
 ## Nicht parametrischer Test mittels Vorzeichen-Test
 
-```{r Vorzeichentest, echo=FALSE}
+```{r Vorzeichentest, echo=TRUE}
 fn_sign(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
 ```
 
@@ -106,7 +106,7 @@ fn_sign(i1_w_MW = daten$i1_dd_w_MW, i1_f_MW = daten$i1_dd_f_MW)
 
 In dieser Analyse werden die Werte der Diskrepanzerkennung und der Initialen Überraschung getrennt nach erlebnisbasiert (w\|f) addiert, wobei die Werte der Initialen Überraschung auf Werte zwischen 0 und 1 normiert werden, damit diese auf dem Skalenniveau der Diskrepanzerkennung liegen.
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 fn_sum_analysis()
 ```
 
@@ -115,7 +115,7 @@ fn_sum_analysis()
 # Analyse der Korrelation 
 Prüfung, ob die Werte der Diskrepanzerkennung mit den Werten der initialen Überraschung korrelieren.
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 fn_correlation_analysis()
 ```
 
@@ -125,6 +125,6 @@ fn_correlation_analysis()
 
 ## Daten
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 knitr::kable(head(daten, n=100), "pipe")
 ```
