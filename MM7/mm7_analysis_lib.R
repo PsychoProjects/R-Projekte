@@ -26,8 +26,8 @@ fn_descriptive_analysis <- function(i1_w_MW, i1_f_MW){
   describe(i1_f_MW, skew = FALSE) %>% print()
   cat("\n\n")
   
-  cat("difference = i1_f_MW - i1_w_MW\n")
-  differences = i1_f_MW - i1_w_MW
+  cat("difference <- (i1_f_MW - i1_w_MW)\n\n")
+  differences <- (i1_f_MW - i1_w_MW)
   cat("summary(differences, digits = 3)\n")
   summary(differences, digits = 3) %>% print()
   cat("describe(differences, skew = FALSE)\n")
@@ -53,8 +53,8 @@ fn_graphical_analysis <- function(i1_w_MW, i1_f_MW, title = "") {
 fn_tTest <- function (i1_w_MW, i1_f_MW) {
   cat(">>> Vorbedingungen prüfen\n")
 
-  cat("difference = i1_f_MW - i1_w_MW\n")
-  differences = i1_f_MW - i1_w_MW
+  cat("difference <- (i1_f_MW - i1_w_MW)\n\n")
+  differences <- (i1_f_MW - i1_w_MW)
   
   cat(">>> Grafische Beurteilung der Normalverteilung der Differenzen\n")
   hist(differences, breaks = seq(min(differences) - 0.5, max(differences) + 0.5, by = 0.1), 
@@ -91,8 +91,8 @@ fn_pearson_r <- function (N, zValue) {
 fn_wilcoxon <- function (i1_w_MW, i1_f_MW) {
   cat(">>> Vorbedingungen prüfen\n")
 
-  cat("difference = i1_f_MW - i1_w_MW\n")
-  differences = i1_f_MW - i1_w_MW
+  cat("difference <- (i1_f_MW - i1_w_MW)\n")
+  differences <- (i1_f_MW - i1_w_MW)
   
   boxplot(differences, main = "Boxplot der Differenzen", ylab = "Differenzen", col = "lightblue")
   
@@ -110,8 +110,8 @@ fn_wilcoxon <- function (i1_w_MW, i1_f_MW) {
 
 # Funktion für die Prüfung und Durchführung des Vorzeichen-Tests
 fn_sign <- function (i1_w_MW, i1_f_MW) {
-  cat("difference = i1_f_MW - i1_w_MW\n")
-  differences = i1_f_MW - i1_w_MW
+  cat("difference <- (i1_f_MW - i1_w_MW)\n\n")
+  differences <- (i1_f_MW - i1_w_MW)
 
   cat("SIGN.test(i1_f_MW, i1_w_MW, md=0, paired = TRUE, alternative = two.sided")
   result <- BSDA::SIGN.test(i1_f_MW, i1_w_MW, md=0, paired = TRUE, 
